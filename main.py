@@ -1,52 +1,44 @@
-
-from pray_time import *
+from pray_time import PrayTimes
+from datetime import date
 import argparse
+from plyer import notification
 
-coordinate = (30.53, 31.65)
 prays_ = {
-            'Fajr': 'الفجر',
-            'Sunrise': 'الشروق',
-            'Dhuhr': 'الظهر',
-            'Asr': 'العصر',
-            'Maghrib': 'المغرب',
-            'Isha': 'العشاء',
-            'Midnight': 'منتصف الليل'
+    'Fajr': 'الفجر',
+    'Sunrise': 'الشروق',
+    'Dhuhr': 'الظهر',
+    'Asr': 'العصر',
+    'Maghrib': 'المغرب',
+    'Isha': 'العشاء',
+    'Midnight': 'منتصف الليل'
+}
 
-    }
-
-def notify_me():
-    prayTimes = PrayTimes('Egypt')
+def notify_me(coordinate, calculation_method):
+    prayTimes = PrayTimes(calculation_method)
     times = prayTimes.getTimes(date.today(), coordinate, 2)
     masg = ''
-    for k, v  in prays_.items():
+    for k, v in prays_.items():
         masg += v + ': ' + times[k.lower()] + '\n'
-        
+
     masg += ('=' * 41)
     notification.notify(
-            title = "اوقات الصلاة لليوم",
-            message = masg,
-            timeout = 15
-        )
+        title="اوقات الصلاة لليوم",
+        message=masg,
+        timeout=15
+    )
 
 def main():
-    
-    # this for egypt cairo only 
-    
-    parser = argparse.ArgumentParser(description="this how to use praytime script ", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-n", "--notify", action="store_true", help="show notification")
-    parser.add_argument("-v", "--verbose", action="store_true", help="increase verbosity")
-    parser.add_argument("-f", "--fajer", help="show fajer pryrime")
-    parser.add_argument("-s", "--sunrise", action="store_true", help="show sunrise time")
-    parser.add_argument("-d", "--dhuhr", action="store_true", help="show dhuhr pryrime")
-    parser.add_argument("-a", "--aser", action="store_true", help="show aser pryrime")
-    parser.add_argument("-m", "--maghrib", action="store_true", help="show maghrib pryrime")
-    parser.add_argument("-i", "--isha", action="store_true", help="show isha pryrime")
+    parser = argparse.ArgumentParser(description="This script displays prayer times for a given location.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-n", "--notify", action="store_true", help="Show notification")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Increase verbosity")
+    parser.add_argument("-lat", "--latitude", type=float, required=True, help="Latitude of the location")
+    parser.add_argument("-lon", "--longitude", type=float, required=True, help="Longitude of the location")
+    parser.add_argument("-m", "--method", default="ISNA", choices=["MWL", "ISNA", "Egypt", "Makkah", "Karachi", "Tehran"], help="Calculation method for prayer times")
     args = parser.parse_args()
-    config = vars(args)
 
-    notify_me()
+    coordinate = (args.latitude, args.longitude)
 
-
+    notify_me(coordinate, args.method)
 
 # sample code to run in standalone mode only
 if __name__ == "__main__":
