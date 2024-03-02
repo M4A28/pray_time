@@ -40,11 +40,6 @@ The Pray Time Python Script is a simple yet powerful tool for calculating prayer
     ```bash
     cd pray_time
     ```
-3. Install dependencies:
-
-    ```bash
-    pip3 install plyer 
-    ```
 
 ## Usage
 
